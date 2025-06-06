@@ -1,0 +1,288 @@
+package main
+
+import "encoding/json"
+import "fmt"
+
+templ DashboardPage(data DashboardData) {
+    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dynamic Multi-Endpoint Dashboard</title>
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body class="bg-gray-100 font-sans">
+        <div id="app" class="container mx-auto p-4 md:p-8">
+            if data.Error != "" {
+                <div id="message-container" class="text-center">
+                    <h2 class="text-2xl font-semibold text-gray-700">{ data.Error }</h2>
+                    <p class="mt-2 text-gray-500">Veuillez spécifier des endpoints valides dans l'URL.</p>
+                    <p class="mt-4 text-left bg-gray-200 p-4 rounded-lg text-sm text-gray-600">
+                        <strong>Exemple:</strong><br>
+                        ?Node1=192.168.1.10:14001&Node2=192.168.1.10:14002
+                    </p>
+                </div>
+            } else {
+                <div>
+                    <div id="charts-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Bandwidth Chart Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Bandwidth Usage</h2>
+                            <div class="relative h-96">
+                                <canvas id="bandwidthChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Disk Space Chart Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Disk Space Usage</h2>
+                            <div class="relative h-96">
+                                <canvas id="diskSpaceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings Section -->
+                    <div class="mt-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-blue-500 mb-4">
+                                    <p class="text-sm text-gray-500 mb-2">Current Month Earnings</p>
+                                    <p class="text-3xl font-bold text-blue-600">${ fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal)/100) }</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-purple-500">
+                                    <p class="text-sm text-gray-500 mb-2">Total Held</p>
+                                    <p class="text-3xl font-bold text-purple-600">${ fmt.Sprintf("%.2f", data.EarningsPayouts.TotalHeld / 100) }</p>
+                                </div>   
+                            </div>                             
+                            <div class="bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-green-500">
+                                <p class="text-sm text-gray-500 mb-2">Total Earned</p>
+                                <p class="text-3xl font-bold text-green-600 mb-2">${ fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal + data.EarningsPayouts.PreviousMonthTotal)/100) }</p>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                    <div>
+                                        <p class="text-sm text-gray-500 mb-1">
+                                            Egress
+                                        </p>    
+                                        <div class="text-xl font-bold text-gray-700">${ fmt.Sprintf("%.2f", data.EarningsPayouts.EgressBandwidthPayout/100) }</div>
+                                        
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500 mb-1">
+                                            Egress (Repair & Audit)
+                                        </p>    
+                                        <div class="text-xl font-bold text-gray-700">${ fmt.Sprintf("%.2f", data.EarningsPayouts.EgressRepairAuditPayout/100) }</div>
+                                        
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500 mb-1">
+                                            Storage
+                                        </p>    
+                                        <div class="text-xl font-bold text-gray-700">${ fmt.Sprintf("%.2f", data.EarningsPayouts.DiskSpacePayout/100) }</div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        if data.Error == "" {
+            <script>
+                // Données fournies par le serveur
+                const nodesData = JSON.parse({{ marshalJSON(data.Nodes) }});
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Traitement des données et initialisation des graphiques
+                    const chartData = processDataForCharts(nodesData);
+                    renderCharts(chartData);
+                });
+
+                /**
+                * Affiche les graphiques avec les données
+                */
+                function renderCharts(chartData) {
+                    const bandwidthCtx = document.getElementById('bandwidthChart').getContext('2d');
+                    const bandwidthOptions = {
+                        ...commonChartOptions,
+                        scales: {
+                            ...commonChartOptions.scales,
+                            x: { stacked: true },
+                            y: { 
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: { callback: formatAxisTick }
+                            }
+                        }
+                    };
+                    
+                    const bandwidthChart = new Chart(bandwidthCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: chartData.labels,
+                            datasets: chartData.bandwidth.datasets,
+                        },
+                        options: bandwidthOptions
+                    });
+
+                    const diskSpaceCtx = document.getElementById('diskSpaceChart').getContext('2d');
+                    const diskSpaceOptions = {
+                        ...commonChartOptions,
+                        scales: {
+                            ...commonChartOptions.scales,
+                            x: { stacked: true },
+                            y: { 
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: { callback: formatAxisTick }
+                            }
+                        }
+                    };
+                    
+                    const diskSpaceChart = new Chart(diskSpaceCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: chartData.labels,
+                            datasets: chartData.storage.datasets,
+                        },
+                        options: diskSpaceOptions
+                    });
+                }
+                
+                // Fonction pour formater les octets avec des unités compactes
+                function formatBytes(bytes, decimals = 2) {
+                    if (!+bytes) return '0';
+                    const k = 1024;
+                    const dm = decimals < 0 ? 0 : decimals;
+                    const sizes = ['', 'k', 'M', 'G', 'T', 'P'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))}${sizes[i]}`;
+                }
+
+                // Traiter les données pour les graphiques
+                function processDataForCharts(nodes) {
+                    const allDates = new Set();
+                    const bandwidthDataByDate = {};
+                    const storageDataByDate = {};
+
+                    nodes.forEach(node => {
+                        // Traitement des données de bande passante
+                        if (node.bandwidthData) {
+                            node.bandwidthData.forEach(item => {
+                                const date = item.intervalStart.split('T')[0];
+                                allDates.add(date);
+                                if (!bandwidthDataByDate[date]) bandwidthDataByDate[date] = {};
+                                const egressUsage = (item.egress.usage || 0) + (item.egress.repair || 0) + (item.egress.audit || 0);
+                                const ingressUsage = (item.ingress.usage || 0) + (item.ingress.repair || 0);
+                                bandwidthDataByDate[date][node.name] = { egress: egressUsage, ingress: ingressUsage };
+                            });
+                        }
+                        
+                        // Traitement des données de stockage
+                        if (node.storageData) {
+                            node.storageData.forEach(item => {
+                                const date = item.intervalStart.split('T')[0];
+                                allDates.add(date);
+                                if (!storageDataByDate[date]) storageDataByDate[date] = {};
+                                storageDataByDate[date][node.name] = item.atRestTotalBytes || 0;
+                            });
+                        }
+                    });
+
+                    const sortedLabels = Array.from(allDates).sort();
+                    
+                    const bandwidthDatasets = [];
+                    const storageDatasets = [];
+                    
+                    // Generate blue shades based on node index and total nodes
+                    function getShade(index, total, shade) {
+                        const minHue = 40, maxHue = 220;
+                        const hue = minHue + ((maxHue - minHue) * (index / Math.max(1, total - 1)));
+                        const bg = `hsla(${hue}, ${shade}, 65%, 1)`;
+                        const border = `hsla(${hue}, ${shade}, 65%, 1)`;
+                        return { bg, border };
+                    }
+                    const colorsStorage = nodes.map((_, i) => getShade(i, nodes.length, '80%'));
+                    const colorsIngress = nodes.map((_, i) => getShade(i, nodes.length, '60%'));
+                    const colorsEgress = nodes.map((_, i) => getShade(i, nodes.length, '40%'));
+
+                    nodes.forEach((node, index) => {
+                        const egressData = sortedLabels.map(date => (bandwidthDataByDate[date] && bandwidthDataByDate[date][node.name]) ? bandwidthDataByDate[date][node.name].egress : 0);
+                        const ingressData = sortedLabels.map(date => (bandwidthDataByDate[date] && bandwidthDataByDate[date][node.name]) ? bandwidthDataByDate[date][node.name].ingress : 0);
+                        
+                        bandwidthDatasets.push({ label: `${node.name} - Egress`, data: egressData, backgroundColor: colorsEgress[index].bg, stack: 'Egress' });
+                        bandwidthDatasets.push({ label: `${node.name} - Ingress`, data: ingressData, backgroundColor: colorsIngress[index].bg, stack: 'Ingress' });
+
+                        const storageData = sortedLabels.map(date => (storageDataByDate[date] && storageDataByDate[date][node.name]) ? storageDataByDate[date][node.name] : null);
+                        storageDatasets.push({ label: `${node.name} - Disk`, data: storageData, borderColor: colorsStorage[index].border, backgroundColor: colorsStorage[index].bg });
+                    });
+
+                    return { 
+                        labels: sortedLabels.map(d => new Date(d).toLocaleDateString()), 
+                        bandwidth: { datasets: bandwidthDatasets }, 
+                        storage: { datasets: storageDatasets } 
+                    };
+                }
+                
+                const commonChartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'top' }, 
+                        tooltip: { 
+                            callbacks: { 
+                                label: (context) => {
+                                    if (!+context.parsed.y) return `${context.dataset.label || ''}: 0 Bytes`;
+                                    const k = 1024;
+                                    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+                                    const i = Math.floor(Math.log(context.parsed.y) / Math.log(k));
+                                    return `${context.dataset.label || ''}: ${parseFloat((context.parsed.y / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+                                }
+                            } 
+                        } 
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                callback: formatAxisTick
+                            } 
+                        } 
+                    }
+                };
+
+                // Fonction dédiée pour le formatage des ticks d'axe
+                function formatAxisTick(value, index, ticks) {
+                    if (value === 0) return '0';
+                    if (!value || isNaN(value)) return '';
+                    
+                    const k = 1024;
+                    const sizes = ['', 'k', 'M', 'G', 'T', 'P'];
+                    
+                    // Déterminer l'indice de l'unité (0=Bytes, 1=KB, 2=MB, etc.)
+                    const i = Math.floor(Math.log(Math.abs(value)) / Math.log(k));
+                    
+                    // Formatter le nombre (avec 1 décimale) + unité
+                    const formattedValue = (value / Math.pow(k, i)).toFixed(1);
+                    
+                    // Supprimer le .0 si nécessaire pour un affichage plus propre
+                    return (formattedValue.endsWith('.0') ? formattedValue.slice(0, -2) : formattedValue) + sizes[Math.min(i, sizes.length - 1)];
+                }
+            </script>
+        }
+    </body>
+    </html>
+}
+
+func marshalJSON(v interface{}) string {
+    data, err := json.Marshal(v)
+    if err != nil {
+        return "[]"
+    }
+    return string(data)
+}
