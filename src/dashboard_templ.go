@@ -50,7 +50,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</h2><p class=\"mt-2 text-gray-500\">Veuillez spécifier des nodes valides dans l'URL ou dans une variable d'environnement \"NODES\"</p><p class=\"mt-4 text-left bg-gray-200 p-4 rounded-lg text-sm text-gray-600\"><strong>Exemple:</strong><br>?Node1=192.168.1.10:14001&Node2=192.168.1.10:14002</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</h2><p class=\"mt-2 text-gray-500\">Please specify valid nodes in the URL or in an environment variable \"NODES\"</p><p class=\"mt-4 text-left bg-gray-200 p-4 rounded-lg text-sm text-gray-600\"><strong>Exemple:</strong><br>?Node1=192.168.1.10:14001&Node2=192.168.1.10:14002</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
