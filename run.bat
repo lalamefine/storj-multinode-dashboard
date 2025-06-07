@@ -1,0 +1,1 @@
+templ generate && go run ./src

@@ -32,7 +32,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Dynamic Multi-Endpoint Dashboard</title><!-- Tailwind CSS --><script src=\"https://cdn.tailwindcss.com\"></script><!-- Chart.js --><script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script></head><body class=\"bg-gray-100 font-sans\"><div id=\"app\" class=\"container mx-auto p-4 md:p-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.prod.website-files.com/65d78d3b8dbb1f54a94020c7/660e34e73c1859e2a3f19840_storj-favicon-lt.png\"><title>Dynamic Multi-Endpoint Dashboard</title><!-- Tailwind CSS --><script src=\"https://cdn.tailwindcss.com\"></script><!-- Chart.js --><script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script></head><body class=\"bg-gray-100 font-sans\"><div id=\"app\" class=\"container mx-auto p-4 md:p-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -44,13 +44,13 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(data.Error)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 23, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 24, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</h2><p class=\"mt-2 text-gray-500\">Veuillez spécifier des endpoints valides dans l'URL.</p><p class=\"mt-4 text-left bg-gray-200 p-4 rounded-lg text-sm text-gray-600\"><strong>Exemple:</strong><br>?Node1=192.168.1.10:14001&Node2=192.168.1.10:14002</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</h2><p class=\"mt-2 text-gray-500\">Veuillez spécifier des nodes valides dans l'URL ou dans une variable d'environnement \"NODES\"</p><p class=\"mt-4 text-left bg-gray-200 p-4 rounded-lg text-sm text-gray-600\"><strong>Exemple:</strong><br>?Node1=192.168.1.10:14001&Node2=192.168.1.10:14002</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -62,7 +62,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal)/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 55, Col: 148}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 56, Col: 148}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -75,7 +75,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.TotalHeld/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 59, Col: 142}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 60, Col: 142}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -88,7 +88,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal+data.EarningsPayouts.PreviousMonthTotal)/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 64, Col: 192}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 65, Col: 192}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -101,7 +101,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.EgressBandwidthPayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 70, Col: 155}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 71, Col: 155}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.EgressRepairAuditPayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 77, Col: 157}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 78, Col: 157}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -127,7 +127,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.DiskSpacePayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 84, Col: 149}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 85, Col: 149}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -149,7 +149,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			}
 			templ_7745c5c3_Var9, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(marshalJSON(data.Nodes))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 98, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 99, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {

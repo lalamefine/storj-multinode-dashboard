@@ -37,7 +37,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	if len(names) == 0 || len(endpoints) == 0 {
 		DashboardPage(DashboardData{
-			Error: "Please provide at least one node endpoint either in the URL query (?NodeName=endpoint:port) or via the NODES environment variable.",
+			Error: "Please provide at least one node endpoint either in the URL query or via the NODES environment variable.",
 		}).Render(r.Context(), w)
 		return
 	}
