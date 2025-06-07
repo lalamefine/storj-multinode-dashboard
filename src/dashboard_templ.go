@@ -32,7 +32,7 @@ func DashboardPage(data DashboardData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.prod.website-files.com/65d78d3b8dbb1f54a94020c7/660e34e73c1859e2a3f19840_storj-favicon-lt.png\"><title>Dynamic Multi-Endpoint Dashboard</title><!-- Tailwind CSS --><script src=\"https://cdn.tailwindcss.com\"></script><!-- Chart.js --><script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script></head><body class=\"bg-gray-100 font-sans\"><div id=\"app\" class=\"container mx-auto p-4 md:p-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.prod.website-files.com/65d78d3b8dbb1f54a94020c7/660e34e73c1859e2a3f19840_storj-favicon-lt.png\"><title>Dynamic Multi-Endpoint Dashboard</title><!-- Tailwind CSS --><script src=\"https://cdn.tailwindcss.com\"></script><!-- Chart.js --><script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script></head><body class=\"bg-slate-800 font-sans\"><div id=\"app\" class=\"container-fluid mx-auto p-4 lg:p-8 xl:px-12 opacity-90\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,79 +55,79 @@ func DashboardPage(data DashboardData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div><div id=\"charts-container\" class=\"grid grid-cols-1 lg:grid-cols-2 gap-8\"><!-- Bandwidth Chart Card --><div class=\"bg-white rounded-lg shadow-lg p-4 md:p-6\"><h2 class=\"text-xl font-semibold text-gray-700 mb-4\">Bandwidth Usage</h2><div class=\"relative h-96\"><canvas id=\"bandwidthChart\"></canvas></div></div><!-- Disk Space Chart Card --><div class=\"bg-white rounded-lg shadow-lg p-4 md:p-6\"><h2 class=\"text-xl font-semibold text-gray-700 mb-4\">Disk Space Usage</h2><div class=\"relative h-96\"><canvas id=\"diskSpaceChart\"></canvas></div></div></div><!-- Earnings Section --><div class=\"mt-8\"><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><div class=\"bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-blue-500 mb-4\"><p class=\"text-sm text-gray-500 mb-2\">Current Month Earnings</p><p class=\"text-3xl font-bold text-blue-600\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div><div id=\"charts-container\" class=\"grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-4\"><!-- Bandwidth Chart Card --><div class=\"bg-white rounded-lg shadow-lg p-4 md:p-6\"><h2 class=\"lg:text-xl font-semibold text-gray-700 lg:mb-4\">Bandwidth Usage</h2><div class=\"relative h-40 md:h-52 xl:h-80\"><canvas id=\"bandwidthChart\"></canvas></div></div><!-- Disk Space Chart Card --><div class=\"bg-white rounded-lg shadow-lg p-4 md:p-6\"><h2 class=\"lg:text-xl font-semibold text-gray-700 lg:mb-4\">Disk Space Usage</h2><div class=\"relative h-40 md:h-52 xl:h-80\"><canvas id=\"diskSpaceChart\"></canvas></div></div></div><!-- Earnings Section --><div class=\"mt-2 lg:mt-4\"><div class=\"grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-4\"><div class=\"grid grid-cols-2 md:grid-cols-1 gap-2\"><div class=\"bg-white rounded-lg p-2 lg:p-5 shadow-md text-center border-t-4 border-blue-500\"><p class=\"text-sm text-gray-500 mb-2\">Current Month Earnings</p><p class=\"text-xl lg:text-3xl font-bold text-blue-600\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal)/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 56, Col: 148}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 56, Col: 159}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</p></div><div class=\"bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-purple-500\"><p class=\"text-sm text-gray-500 mb-2\">Total Held</p><p class=\"text-3xl font-bold text-purple-600\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</p></div><div class=\"bg-white rounded-lg p-2 lg:p-5 shadow-md text-center border-t-4 border-purple-500\"><p class=\"text-sm text-gray-500 mb-2\">Total Held</p><p class=\"text-xl lg:text-3xl font-bold text-purple-600\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.TotalHeld/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 60, Col: 142}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 60, Col: 153}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</p></div></div><div class=\"bg-white rounded-lg p-5 shadow-md text-center border-t-4 border-green-500\"><p class=\"text-sm text-gray-500 mb-2\">Total Earned</p><p class=\"text-3xl font-bold text-green-600 mb-2\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</p></div></div><div class=\"bg-white rounded-lg p-2 lg:p-5 shadow-md text-center border-t-4 border-green-500\"><p class=\"text-sm text-gray-500 mb-2\">Total Earned</p><p class=\"text-xl lg:text-3xl font-bold text-green-600 mb-2\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", (data.EarningsPayouts.CurrentMonthTotal+data.EarningsPayouts.PreviousMonthTotal)/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 65, Col: 192}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 65, Col: 203}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</p><div class=\"grid grid-cols-1 md:grid-cols-3 gap-2\"><div><p class=\"text-sm text-gray-500 mb-1\">Egress</p><div class=\"text-xl font-bold text-gray-700\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</p><div class=\"grid grid-cols-3 gap-2\"><div><p class=\"text-sm text-gray-500 mb-1\">Egress</p><div class=\"lg:text-xl font-bold text-gray-700\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.EgressBandwidthPayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 71, Col: 155}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 71, Col: 158}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div><div><p class=\"text-sm text-gray-500 mb-1\">Egress (Repair & Audit)</p><div class=\"text-xl font-bold text-gray-700\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div><div><p class=\"text-sm text-gray-500 mb-1\">Egress (Repair & Audit)</p><div class=\"lg:text-xl font-bold text-gray-700\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.EgressRepairAuditPayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 78, Col: 157}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 78, Col: 160}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div><div><p class=\"text-sm text-gray-500 mb-1\">Storage</p><div class=\"text-xl font-bold text-gray-700\">$")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div><div><p class=\"text-sm text-gray-500 mb-1\">Storage</p><div class=\"lg:text-xl font-bold text-gray-700\">$")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f", data.EarningsPayouts.DiskSpacePayout/100))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 85, Col: 149}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `src/Dashboard.templ`, Line: 85, Col: 152}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
