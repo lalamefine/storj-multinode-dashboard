@@ -12,11 +12,11 @@ Includes basic caching & background refreshing
 ## Launch via Docker
    Minimal : 
    ```bash
-    docker run --rm -p 8080:80 lalamefine/storej-multinode
+    docker run -p 8080:80 lalamefine/storej-multinode
    ```
    or with predefined nodes:
    ```bash
-    docker run --rm -p 8080:80 -e NODES="Node1=192.168.1.30:14002,Node2=192.168.1.30:14003" lalamefine/storej-multinode
+    docker run -p 8080:80 -e NODES="Node1=192.168.1.30:14002,Node2=192.168.1.30:14003" lalamefine/storej-multinode
    ```
 
 ## 🖥️ Usage
