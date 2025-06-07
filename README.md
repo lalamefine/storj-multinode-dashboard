@@ -3,6 +3,7 @@
 A lightweight and high-performance web dashboard for monitoring multiple Storj nodes simultaneously.
 Includes basic caching & background refreshing
 
+![Dashboard Screenshot](docs/dashboard.png)
 
 ## Environment variables:
 - `PORT`: Server listening port (default 80)
