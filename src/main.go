@@ -11,7 +11,7 @@ import (
 // Constantes pour la configuration du cache
 const (
 	cacheExpiration   = 30 * time.Minute
-	refreshInterval   = 10 * time.Minute
+	refreshInterval   = 30 * time.Minute
 	backgroundRefresh = true // Active/désactive le rafraîchissement automatique
 )
 

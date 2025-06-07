@@ -1,6 +1,5 @@
 package main
 
-// NodeData représente les données d'un nœud Storj
 type NodeData struct {
 	Name          string           `json:"name"`
 	BandwidthData []BandwidthDaily `json:"bandwidthData"`
@@ -8,34 +7,29 @@ type NodeData struct {
 	Earnings      EarningsData     `json:"earnings"`
 }
 
-// BandwidthDaily représente les données d'utilisation quotidienne de bande passante
 type BandwidthDaily struct {
 	IntervalStart string         `json:"intervalStart"`
 	Egress        BandwidthUsage `json:"egress"`
 	Ingress       BandwidthUsage `json:"ingress"`
 }
 
-// BandwidthUsage détaille l'utilisation de bande passante
 type BandwidthUsage struct {
 	Usage  float64 `json:"usage"`
 	Repair float64 `json:"repair"`
 	Audit  float64 `json:"audit"`
 }
 
-// StorageDaily représente les données quotidiennes de stockage
 type StorageDaily struct {
 	IntervalStart    string  `json:"intervalStart"`
 	AtRestTotalBytes float64 `json:"atRestTotalBytes"`
 }
 
-// DashboardData contient toutes les données pour le tableau de bord
 type DashboardData struct {
 	Nodes           []NodeData      `json:"nodes"`
 	EarningsPayouts EarningsPayouts `json:"earningsPayouts"`
 	Error           string          `json:"error,omitempty"`
 }
 
-// EarningsData représente les données de revenus d'un nœud Storj
 type EarningsData struct {
 	CurrentMonth struct {
 		EgressBandwidth         float64 `json:"egressBandwidth"`

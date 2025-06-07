@@ -5,14 +5,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
-// fetchNodesDataForce force le rafraîchissement du cache sans vérifier s'il est valide
 func fetchNodesDataForce(names, endpoints []string) []NodeData {
 	nodes := fetchNodesDataInternal(names, endpoints)
 
-	// Mettre à jour le cache si nous avons récupéré des données
 	if len(nodes) > 0 {
 		cacheKey := generateCacheKey(names, endpoints)
 		cache.mutex.Lock()
@@ -24,17 +23,14 @@ func fetchNodesDataForce(names, endpoints []string) []NodeData {
 	return nodes
 }
 
-// fetchNodesData récupère les données des nœuds Storj (avec mise en cache)
 func fetchNodesData(names, endpoints []string) []NodeData {
 	cacheKey := generateCacheKey(names, endpoints)
 
-	// Vérifier si les données sont en cache et toujours valides
 	cache.mutex.RLock()
 	cachedData, exists := cache.data[cacheKey]
 	cachedTime, timeExists := cache.timestamps[cacheKey]
 	cache.mutex.RUnlock()
 
-	// Si les données sont en cache et encore valides
 	if exists && timeExists && time.Since(cachedTime) < cacheExpiration {
 		log.Printf("Data fetched from cache for %d nodes", len(endpoints))
 		return cachedData
@@ -43,85 +39,91 @@ func fetchNodesData(names, endpoints []string) []NodeData {
 	return fetchNodesDataForce(names, endpoints)
 }
 
-// fetchNodesDataInternal contient la logique de récupération des données
 func fetchNodesDataInternal(names, endpoints []string) []NodeData {
-	// Si les données ne sont pas en cache ou sont expirées, les récupérer
 	log.Printf("Fetching fresh data for %d nodes", len(endpoints))
-	var nodes []NodeData
-
-	// Créer un client HTTP avec timeout
+	nodes := make([]NodeData, len(endpoints))
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 30 * time.Second,
 	}
 
-	// Récupérer les données pour chaque nœud
-	for i, endpoint := range endpoints {
-		name := names[i]
-		baseUrl := "http://" + endpoint
+	var wg sync.WaitGroup
+	for i := range endpoints {
+		wg.Add(1)
 
-		// Récupérer les données de bande passante et stockage
-		url := baseUrl + "/api/sno/satellites"
+		go func(index int, nodeName, nodeEndpoint string) {
+			defer wg.Done()
+			node, success := fetchSingleNodeData(client, nodeName, nodeEndpoint)
+			if success {
+				nodes[index] = node
+			}
+		}(i, names[i], endpoints[i])
+	}
 
-		// Faire la requête
-		resp, err := client.Get(url)
-		if err != nil {
-			log.Printf("Error connecting to %s: %v", endpoint, err)
-			continue
+	wg.Wait()
+	var validNodes []NodeData
+	for _, node := range nodes {
+		if node.Name != "" {
+			validNodes = append(validNodes, node)
 		}
-		defer resp.Body.Close()
+	}
 
-		// Vérifier le statut de la réponse
-		if resp.StatusCode != http.StatusOK {
-			log.Printf("Invalid response status for %s: %d", endpoint, resp.StatusCode)
-			continue
-		}
+	return validNodes
+}
 
-		// Lire le corps de la réponse
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			log.Printf("Error reading response body from %s: %v", endpoint, err)
-			continue
-		}
+func fetchSingleNodeData(client *http.Client, name, endpoint string) (NodeData, bool) {
+	baseUrl := "http://" + endpoint
+	url := baseUrl + "/api/sno/satellites"
+	resp, err := client.Get(url)
+	if err != nil {
+		log.Printf("Error connecting to %s: %v", endpoint, err)
+		return NodeData{}, false
+	}
+	defer resp.Body.Close()
 
-		// Décoder la réponse JSON
-		var data struct {
-			BandwidthDaily []BandwidthDaily `json:"bandwidthDaily"`
-			StorageDaily   []StorageDaily   `json:"storageDaily"`
-		}
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Invalid response status for %s: %d", endpoint, resp.StatusCode)
+		return NodeData{}, false
+	}
 
-		if err := json.Unmarshal(body, &data); err != nil {
-			log.Printf("Error decoding JSON response from %s: %v", endpoint, err)
-			continue
-		}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Error reading response body from %s: %v", endpoint, err)
+		return NodeData{}, false
+	}
 
-		// Récupérer les données de revenus
-		earningsUrl := baseUrl + "/api/sno/estimated-payout"
-		respEarnings, err := client.Get(earningsUrl)
-		var earnings EarningsData
-		if err != nil {
-			log.Printf("Error connecting to earnings endpoint %s: %v", earningsUrl, err)
-			// Continuer avec les autres données
-		} else {
-			defer respEarnings.Body.Close()
+	var data struct {
+		BandwidthDaily []BandwidthDaily `json:"bandwidthDaily"`
+		StorageDaily   []StorageDaily   `json:"storageDaily"`
+	}
 
-			if respEarnings.StatusCode == http.StatusOK {
-				bodyEarnings, err := io.ReadAll(respEarnings.Body)
-				if err == nil {
-					if err := json.Unmarshal(bodyEarnings, &earnings); err != nil {
-						log.Printf("Error decoding earnings JSON from %s: %v", endpoint, err)
-					}
+	if err := json.Unmarshal(body, &data); err != nil {
+		log.Printf("Error decoding JSON response from %s: %v", endpoint, err)
+		return NodeData{}, false
+	}
+
+	var earnings EarningsData
+	earningsUrl := baseUrl + "/api/sno/estimated-payout"
+	respEarnings, err := client.Get(earningsUrl)
+
+	if err != nil {
+		log.Printf("Error connecting to earnings endpoint %s: %v", earningsUrl, err)
+	} else {
+		defer respEarnings.Body.Close()
+
+		if respEarnings.StatusCode == http.StatusOK {
+			bodyEarnings, err := io.ReadAll(respEarnings.Body)
+			if err == nil {
+				if err := json.Unmarshal(bodyEarnings, &earnings); err != nil {
+					log.Printf("Error decoding earnings JSON from %s: %v", endpoint, err)
 				}
 			}
 		}
-
-		// Ajouter les données du nœud
-		nodes = append(nodes, NodeData{
-			Name:          name,
-			BandwidthData: data.BandwidthDaily,
-			StorageData:   data.StorageDaily,
-			Earnings:      earnings,
-		})
 	}
 
-	return nodes
+	return NodeData{
+		Name:          name,
+		BandwidthData: data.BandwidthDaily,
+		StorageData:   data.StorageDaily,
+		Earnings:      earnings,
+	}, true
 }
